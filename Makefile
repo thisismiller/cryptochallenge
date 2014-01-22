@@ -20,7 +20,7 @@ bytes-internal-test: bytes-internal-test.o bytes-internal.o
 bytes-test: bytes-test.o bytes.o bytes-internal.o
 	csc $^ -o $@
 
-challenges: challenges.o bytes.o bytes-internal.o
+challenges: challenges.o bytes.o bytes-internal.o crypto.o
 	csc $^ -o $@
 
 
@@ -29,4 +29,5 @@ challenges: challenges.o bytes.o bytes-internal.o
 bytes.o: bytes-internal.o
 bytes-test.o: bytes.o
 bytes-internal-test.o: bytes-internal.o
-challenges.o: bytes.o
+crypto.o: bytes.o
+challenges.o: bytes.o crypto.o
