@@ -1,5 +1,5 @@
-(declare (uses bytes crypto))
-(import bytes crypto)
+(declare (uses bytes crypto srfi-1))
+(import bytes crypto srfi-1)
 (use test)
 
 (test "Challenge 1 - hex to base64" "SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t" (bytes->base64 (base16->bytes "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d")))
@@ -348,3 +348,6 @@
       "Now that the party is jumping\n"
       (find-breakable-xor letter-frequency-scorer strings-for-challenge4))
 
+(test "Challenge 5 - Repeating-key XOR Cipher"
+      "0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f"
+      (bytes->base16 (encrypt-xor (string->bytes "Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal") (string->bytes "ICE"))))

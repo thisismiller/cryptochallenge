@@ -4,6 +4,7 @@
 
 (module bytes (base16->bytes bytes->base16
                base64->bytes bytes->base64
+               string->bytes bytes->string
                bytes-xor)
   (import scheme chicken data-structures srfi-1)
 
@@ -48,6 +49,12 @@
            (sbits (map (lambda (lst) (implode-number lst 2)) (chop dbits 3))))
       (list->string (map int->base64 sbits))))
 
+
+  ; And these are just convenient to have
+  (define (string->bytes str)
+    (map char->integer (string->list str)))
+  (define (bytes->string lst)
+    (list->string (map integer->char)))
 
   ; Challenge two definitely easy...
   (define (bytes-xor lst1 lst2)

@@ -3,6 +3,7 @@
          (uses bytes))
 
 (module crypto (break-char-xor find-breakable-xor
+                encrypt-xor
                 letter-frequency-scorer most-spaces-scorer
                 minf)
   (import scheme chicken data-structures srfi-1 bytes)
@@ -132,9 +133,12 @@
               (cons (f (car lst)) (car lst))
               (cdr lst))))
 
+  (define (encrypt-xor lst key)
+    (bytes-xor lst (apply circular-list key)))
+
   (define (break-char-xor scorer bytes)
     (let* ((possibilities (list-tabulate 256 identity))
-           (candidates (map (lambda (x) (bytes-xor bytes (circular-list x)))
+           (candidates (map (lambda (x) (encrypt-xor bytes (list x)))
                             possibilities))
            (charlsts (map (lambda (x) (map integer->char x))
                          candidates))
@@ -153,4 +157,6 @@
                                hexlst))
            (best (minf car possibilities)))
       (cdr best)))
+
+
 )
