@@ -30,6 +30,7 @@
                                       (char->integer #\0))))
           ((equal? c #\+) 62)
           ((equal? c #\/) 63)
+          ((equal? c #\=) 64)
           (else (assert #f))))
 
   (define (int->base64 n)

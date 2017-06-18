@@ -38,23 +38,34 @@
   ; Somewhat graphically, this goes:
   ;  0xAAAA -> 01 01 01 01 01 01 01 01 ->
   ;  (01 01 01) (01 01 01) (01 01 01) -> (base64) VVV
+  ; And padding is so annoying -___-;;
+  ;
+  ; It seems the more common way to do this is to convert chunks of 4 base64
+  ; characters into 3 bytes.  But, that's not how I did it.
   (define (base64->bytes str) 
     (let* ((b64i (map base64->int (string->list str)))
            (bits (flatten (map (lambda (x) (explode-number x 6 2)) b64i)))
-           (quads (chop bits 4)))
-      (map (lambda (lst) (implode-number lst 2)) quads)))
+           (quads (chop bits 4))
+           (bytes (map (lambda (lst) (implode-number lst 2)) quads))
+           (padding (count (lambda (x) (= x 64)) b64i)))
+      (drop-right bytes padding)))
 
   (define (bytes->base64 bytes)
-    (let* ((dbits (flatten (map (lambda (x) (explode-number x 8 2)) bytes)))
+    (let* ((padding (modulo (- 3 (modulo (length bytes) 3)) 3))
+           (padded (append bytes (make-list padding 0)))
+           (dbits (flatten (map (lambda (x) (explode-number x 8 2)) padded)))
            (sbits (map (lambda (lst) (implode-number lst 2)) (chop dbits 3))))
-      (list->string (map int->base64 sbits))))
+      (list->string (append (drop-right (map int->base64 sbits) padding)
+                            (make-list padding #\=)))))
 
 
   ; And these are just convenient to have
   (define (string->bytes str)
     (map char->integer (string->list str)))
+
   (define (bytes->string lst)
-    (list->string (map integer->char)))
+    (list->string (map integer->char lst)))
+
 
   ; Challenge two definitely easy...
   (define (bytes-xor lst1 lst2)

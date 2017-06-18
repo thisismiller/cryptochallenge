@@ -16,11 +16,14 @@
 (test-group "base64->bytes"
   (test "AAAA" '(0 0 0) (base64->bytes "AAAA"))
   (test "BBBB" '(4 16 65) (base64->bytes "BBBB"))
+  (test "AAA=" '(0 0) (base64->bytes "AAA="))
 )
 
 (test-group "bytes->base64"
   (test "0 0 0" "AAAA" (bytes->base64 '(0 0 0)))
   (test "4 16 65" "BBBB" (bytes->base64 '(4 16 65)))
+  (test "0 0" "AAA=" (bytes->base64 '(0 0)))
+  (test "0" "AA==" (bytes->base64 '(0)))
 )
 
 (test-group "base16->bytes->base16"
